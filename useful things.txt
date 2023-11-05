@@ -37,3 +37,27 @@ python manage.py makemigrations store --name ADDED_COLUMN_NAME_RATING
 
 python manage.py showmigrations
 
+====================================================================================================
+git remote rm origin
+
+git remote add origin
+
+Username and Password don't work anymore, 
+instead you have to use your Personal access tokens, like so,
+git remote set-url origin https://PERSONAL_ACCESS_TOKEN@github.com/username/reponame.git
+
+====================================================================================================
+List your git config:
+
+git config --list
+git config --list --show-origin
+
+Change username and email global:
+
+git config --global user.name "Nanhe Kumar"
+git config --global user.email "info@nanhekumar.com"
+
+Change username and email for current repo:
+
+git config  user.name "Nanhe Kumar"
+git config  user.email "info@nanhekumar.com"
