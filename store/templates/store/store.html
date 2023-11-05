@@ -1,0 +1,18 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+	<div class="row">
+		{% for product in product_categories %}
+			<div class="col-lg-4 product-box">
+				<img class="thumbnail" src="{{ product.get_imageURL }}">
+				<div class="box-element">
+					<h6><strong>{{product.name}}</strong></h6>
+					<hr>
+					<a class="btn btn-outline-success" href="{% url 'show_items' product.id %}">View Items</a>
+
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
+{% endblock content %}

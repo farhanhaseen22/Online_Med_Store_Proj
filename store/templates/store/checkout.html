@@ -1,0 +1,71 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<h2>Checkout Page :</h2>
+     <div class="row">
+		<div class="col-lg-6">
+			<div class="box-element" id="form-wrapper">
+				<form method="POST" action="{% url 'checkout'%}">
+					{% csrf_token %}
+					{{ form|crispy }}
+					<br>
+					<input type="submit" class="btn btn-primary mb-2" name="submit" , value='Add Address'>	
+				</form>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="box-element">
+				<a  class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+				<hr>
+				<h3>Order Summary</h3>
+				<hr>
+				{% for item in items %}
+					<div class="cart-row" style="background-color: lightyellow;height: 80px">
+						<div style="flex:2"><a href="{% url 'item_detail' item.product.id %}"><img class="row-image" src="{{ item.product.get_imageURL }}" style="width: 80px; height: 80px;margin-left: 20px"></a></div>
+						<div style="flex:2"><p>{{item.product.name}}</p></div>
+						<div style="flex:1"><p>&dollar;{{item.product.price|floatformat:2}}</p></div>
+						<div style="flex:1"><p>x{{item.quantity}}</p></div>
+					</div>
+				{% endfor %}
+				<h5>Items:   {{total_item_cart}}</h5>
+				<h5>Total:   &dollar;{{total_cost_cart}}</h5>
+			</div>
+		</div>
+	</div>
+
+	<br>
+	<br>
+	{% if request.user.is_authenticated %}
+		<h6>Your Saved Addresses From Before:</h6>
+		<div class="box-element">
+			{% for adr in addresses %}
+				<div class="address-section">
+					<h4><strong><p>{{adr.recepient_fullname}}</p></strong></h4>
+					<div> Phone Number :-> {{adr.phone_no}}</div>
+					<div class="info">
+						<pre> {{adr.address_line1}},</pre>
+						<pre> {{adr.address_line2}},</pre>
+						<pre> {{adr.city}},</pre>
+						<pre> {{adr.state}},</pre>
+						<pre> {{adr.country}},</pre>
+						<pre> {{adr.zipcode}}</pre>
+					</div>
+					<div class="actions">
+						<div>
+							<pre><a href="{% url 'make_payment' adr.id %}">Use</a></pre>
+						</div>
+						<div>
+							<pre><a href="{% url 'update_address' adr.id %}">Edit</a></pre>
+						</div>
+						<div>
+							<pre><a href="{% url 'delete_address' adr.id %}">Delete</a></pre>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+	
+{% endblock content %}

@@ -1,0 +1,39 @@
+First, redirect the output of pip freeze to a file named requirements.txt.
+
+$ pip freeze > requirements.txt
+
+Next, copy or move this requirements.txt to the other environment and use it to install the packages.
+
+$ pip install -r requirements.txt
+
+===================Create & Start virtual environment==========================
+
+py -m venv venv
+venv\Scripts\activate
+
+===============================================================================
+
+Now execute these commands:
+$ python manage.py shell
+
+Then the interactive python shell with django powers will appear. Then type in:
+$ from django.contrib.auth.models import User
+$ User.objects.get(username="NameHere", is_superuser=True).delete()
+
+You should replace the name of the superuser you created with NameHere in the last command.
+
+====================================================================================================
+
+python manage.py createsuperuser
+
+python manage.py runserver
+
+Go to http://127.0.0.1:8000/admin/
+
+====================================================================================================
+create database Medistore;
+
+python manage.py makemigrations store --name ADDED_COLUMN_NAME_RATING
+
+python manage.py showmigrations
+

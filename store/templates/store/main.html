@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<title>Medicine Online Store</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://maxscdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<!-- Load font awesome icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+	<link rel="stylesheet" type="text/css" href="{% static 'store/css/main.css' %}">
+	<script type="text/javascript">
+		var user = '{{request.user}}'
+	</script>
+	<style>
+
+		.dropdown {
+		  position: relative;
+		  display: inline-block;
+		}
+		.dropdown-content {
+		  display: none;
+		  position: absolute;
+		  background-color: #ebe5e5;
+		  min-width: 180px;
+		  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		  z-index: 1;
+		}
+		.right00 {
+			right: 0;
+		}
+		.dropdown-content a {
+		  color: black;
+		  padding: 8px 16px;
+		  text-decoration: none;
+		  display: block;
+		}
+		.dropdown-content a:hover {
+		  background-color: #ddd;
+		}
+		.dropdown:hover .dropdown-content {
+		  display: block;
+		}
+		.search-custom {
+		  	width: 20rem;
+			padding: .375rem .75rem;
+			font-size: 1rem;
+			line-height: 1.5;
+			color: #495057;
+			background-color: #fff;
+			background-clip: padding-box;
+			border: 1px solid #ced4da;
+			border-radius: .25rem;
+		}
+
+	</style>
+
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg bg-success" id="navbar_top">
+	  <!-- <h5><strong><a class="navbar-brand" href="{% url 'store' %}" style="color: white">Ecommerce</a></strong></h5> -->
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav mr-auto">
+	      <li class="nav-item active">
+	        <h5><strong><a class="nav-link" href="{% url 'store' %}" style="color: white">Medi-Store<span class="sr-only">(current)</span></a></strong></h5>
+	      </li>
+	 
+	    </ul>
+	    <div class="form-inline my-2 my-lg-0">
+	    	
+	    	<form method="get" action="{% url 'search' %}" class="form-inline my-2 my-lg-0">
+				<input type="search" name="search" aria-label="Search" placeholder="Search for anything" class="mr-sm-4 search-custom">
+				<button class="btn btn-warning my-2 mr-sm-3 rounded" type="submit">Search</button>
+			</form>
+
+			<div class="dropdown mr-sm-3">
+				<h5><strong><a style="color: white">Categories</a></strong></h5>
+				<div class="dropdown-content">
+					{% for product in product_categories %}
+						<a href="{% url 'show_items' product.id %}">{{product.name}}</a>
+					{% endfor%}
+				</div>
+			</div>
+	    	{% if request.user.is_authenticated %}
+	     		{% if request.user.profile.photo %}
+					<a href="{% url 'profilepage' username=user.username %}"><img class="mr-sm-1" src="{{ request.user.profile.photo.url }}" width="35" height="35"></a>
+				{% else %}
+					<a href="{% url 'profilepage' username=user.username %}"><img class="mr-sm-1" src="/static/images/default.png" width="35" , height="35"></a>
+				{% endif %}
+		    	<h5><strong><a href="{% url 'profilepage' username=request.user.username %}" style="color: white">{{request.user.username}}</a></strong></h5>
+				
+				<a href="{% url 'cart' %}">
+					<img  id="cart-icon" src="{% static 'images/cart.png' %}">
+				</a>
+				<p id="cart-total">{{total_item_cart}}</p>
+
+				<div class="dropdown mr-sm-3">
+					<h5><strong><a  style="color: #28a745;">A<i class="fa-solid fa-bars" style="color: #f7f5f7;"></i></a></strong></h5>
+					<div class="dropdown-content right00">
+						<a href="{% url 'fav_orders' %}">
+							Favourites
+						</a>
+						<a href="{% url 'order_details' %}">
+							Orders
+						</a>
+						<a href="{% url 'user_logout' %}">
+							<i class="fa-solid fa-right-from-bracket fa-sm" style="color: #0e0101;"></i> Logout
+						</a>
+					</div>
+				</div>
+	     	
+	     	{% else %}
+			
+	     		<h5 class="mr-sm-3"><strong><a href="{% url 'user_login' %}" style="color: white">Login</a></strong></h5>
+	     		<div>
+		     		<h5 class="mr-sm-3"><strong><a href="{% url 'register' %}" style="color: white">Register</a></strong></h5>
+	     		</div>
+
+	     	{% endif %}
+	     	
+	    </div>
+	  </div>
+	</nav>
+
+	<div class="main-content">
+		<div class="container container-fluid">
+			{% block content %}
+			{% endblock %}
+					
+			<!-- <br><br>
+			<blockquote class="blockquote text-center">
+				<p class="mb-0">** That's it! **</p>
+				<footer class="blockquote-footer"> You've scrolled to the end of the List!</footer>
+			</blockquote> -->
+
+		</div>
+	</div>
+	
+	<!-- <div class="example-text">
+		<h1>Example Text</h1>
+		<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quas, vero, id dignissimos ullam sapiente accusamus voluptatibus, ducimus tempore esse modi neque doloremque quod! Necessitatibus, asperiores maiores. Itaque excepturi repellat, fuga error, tempora explicabo ab quibusdam nesciunt maiores voluptas earum sit blanditiis doloremque neque illum accusantium? Distinctio temporibus dolores magni voluptatem ipsum, voluptates aliquam pariatur doloremque qui rem ipsa natus nulla unde voluptatibus numquam et cum, sint commodi quis similique facilis harum blanditiis nesciunt! Delectus accusamus iure vel dolorem, beatae ex perferendis culpa nobis, suscipit ab minus soluta quos neque reiciendis non eligendi eius in laudantium, facilis fuga accusantium quae! Quos officiis commodi magni earum error consequatur optio quisquam ipsa animi architecto, voluptatibus praesentium velit aut excepturi voluptatem ad doloremque cumque quia rem temporibus, cum eligendi? Animi sit dolorem cum fugit. Quaerat nisi assumenda in vel, delectus voluptas dolore hic, quos architecto, itaque quae enim. Laborum neque distinctio sequi voluptatem exercitationem beatae eaque, tempore modi labore fugiat. Totam quos impedit ut, voluptas, repellat, ducimus deleniti illum quis quae similique quam repellendus aperiam accusantium atque. Qui, molestiae. Aliquid eum natus consequatur maiores, earum, facilis corrupti asperiores accusamus hic id ea ex non est aspernatur. Perferendis id consequuntur molestias praesentium quam, delectus accusamus velit unde dolorum debitis ea laboriosam consectetur sunt nisi odit rem vitae possimus! Eos mollitia, deserunt exercitationem natus accusantium perferendis eveniet dolores ut tempore sint in fuga laboriosam quasi suscipit! Voluptatem esse ducimus beatae, obcaecati soluta, eius ullam neque reiciendis libero quasi cupiditate ad maxime enim magnam! Ab quia eligendi nemo saepe dignissimos quas obcaecati inventore suscipit sequi id? Ullam natus ipsum voluptate quibusdam, nesciunt, veniam quis facilis esse ipsa pariatur dolores magni eligendi? Accusamus ad pariatur harum consequuntur adipisci enim saepe aliquid tempora labore mollitia, distinctio rem, neque non fuga rerum necessitatibus, quos repudiandae unde voluptates! Sit aliquid velit voluptates iusto, totam impedit dicta corporis officia asperiores ipsa recusandae atque placeat rerum numquam odit doloremque. Vitae asperiores dolorum consequatur! Ab et numquam a, qui similique praesentium, consequuntur ratione ducimus temporibus, voluptate eum doloribus aperiam recusandae! Neque repellat, fuga reprehenderit harum minus repudiandae non dolore voluptatibus dolorum, amet nobis aspernatur nisi quae, doloribus at ipsum perferendis possimus commodi praesentium obcaecati doloremque quibusdam? Recusandae eos obcaecati maxime voluptatem provident odit. Beatae aperiam doloribus reiciendis ut ad porro natus explicabo consequuntur tenetur dolor quo magni labore laboriosam nulla possimus, nesciunt quam nobis corporis optio? Corporis, exercitationem corrupti quas alias adipisci excepturi voluptatum deserunt quidem nobis at, aliquid eveniet quam minus assumenda error pariatur ipsa. Ut at libero soluta ea autem cum itaque, ducimus ab maiores culpa repudiandae a iure magni beatae nemo sequi error consectetur odit quisquam accusamus facilis quasi perferendis vitae odio. Ex sed, doloremque itaque repellat autem totam alias dolore quibusdam consequuntur sunt, inventore maiores sint? Tempora, officiis quaerat porro itaque quam asperiores doloremque voluptas enim eius adipisci repudiandae fugit, maiores magni a voluptatem commodi impedit omnis tenetur. Laborum dolores nisi esse fugit aut! Numquam, repellat deleniti. In esse eligendi, repudiandae consectetur vero voluptas distinctio, explicabo minima, maxime nulla cumque ducimus atque illum modi natus obcaecati. Aliquam atque esse rem, totam fugiat assumenda voluptatum consequatur, reprehenderit, commodi dignissimos necessitatibus minus dolorem dolores vero deserunt perspiciatis adipisci deleniti quod sint? Quod harum unde voluptatibus soluta corporis aperiam voluptates maxime eveniet deserunt libero facere, ad ipsa nemo quae, consequuntur temporibus molestiae laboriosam, tempora accusamus sequi non amet. Tempora, quibusdam vero nesciunt accusantium, nulla illum optio ab similique sit aspernatur adipisci quia eius deserunt aliquid error incidunt atque, culpa alias? Dignissimos, architecto illo repudiandae praesentium veritatis facere magnam pariatur aliquid, dolorum perspiciatis non ab enim labore quod neque fugit corporis, consequatur quas magni! Quisquam facilis consequuntur perspiciatis reprehenderit quae? Reiciendis sit, vitae at enim tempore itaque. Hic similique impedit aliquid ipsam ab quam voluptates incidunt mollitia voluptate exercitationem a sunt pariatur, laboriosam consequuntur aut ullam ad quisquam accusantium commodi sit placeat. Exercitationem fuga animi natus possimus dolor dicta molestiae quis esse amet aperiam expedita magni odit officia, ipsa laboriosam voluptates laborum. Nihil nam sint perspiciatis animi! Sunt eaque quo laboriosam ea explicabo dolorum facere rerum harum doloribus recusandae quam temporibus modi incidunt, ducimus veniam enim! Distinctio consequatur nulla iste sed natus nemo ut veniam iure tempora! Voluptates, cumque facilis consequuntur expedita voluptatem in fugiat asperiores libero vitae eligendi et odit delectus veniam repellat laboriosam nihil incidunt totam quas ex est, aperiam laudantium. Pariatur esse officia, harum laboriosam, quidem quos aut voluptatibus ad ab consequuntur possimus! Consectetur ullam suscipit debitis obcaecati mollitia consequuntur ea laborum quia voluptate eius ipsa maxime, inventore ad velit cupiditate qui fugiat veniam molestiae dicta hic blanditiis! Ab optio minima, earum nostrum quaerat, alias assumenda ex, cupiditate eius suscipit nisi magnam necessitatibus cumque exercitationem ratione aspernatur voluptatibus nulla perferendis iure doloremque officiis? Consectetur sed, aperiam eum quas sapiente voluptatum, voluptatem alias error unde, ratione est esse eveniet. Velit consequatur quae vel tempora maiores nobis, nam optio beatae laudantium corporis, perspiciatis temporibus ullam qui, cum minima quam. Vel, sed. Id, velit commodi animi ea mollitia molestiae ipsa praesentium officiis quas aut quibusdam tenetur enim quasi nulla aliquid! Recusandae odio amet eaque, molestiae, eveniet aliquam, animi sint veniam placeat autem eos atque! Culpa, sit! Delectus rem reprehenderit perferendis fugit ipsam nisi deserunt laudantium itaque obcaecati. Veritatis velit soluta ea vel, earum vero sed quae? Vel tempora molestiae fugiat rem atque. Minus tenetur, esse temporibus amet hic vel explicabo qui odit! Deleniti velit reiciendis optio et quas aperiam nobis, nemo ipsum quasi assumenda aliquam repudiandae veniam voluptatum nisi fugit deserunt voluptatem expedita illum accusamus odit minima officiis possimus. Incidunt, possimus magnam praesentium saepe similique tempore temporibus quae? Voluptatibus nisi, quibusdam quidem distinctio, placeat cum ipsam, inventore necessitatibus tempore odit itaque exercitationem? Ea suscipit ducimus, optio adipisci nesciunt facilis molestias asperiores corrupti veniam maiores, vitae sit fugiat ipsa explicabo deserunt consequatur autem. Culpa alias cumque incidunt unde optio provident odio reprehenderit similique ea libero tempora quisquam hic deleniti reiciendis impedit neque vitae nobis rem fugit adipisci, repellendus sit ducimus? Tempore nobis tenetur, explicabo, dolore voluptatum, deserunt veritatis suscipit corrupti fuga cum expedita! Ducimus, unde?</p>
+	</div> -->
+
+	<footer class="footer">
+		<p style="text-align: center;">No 1983 ©Copyright Intended</p>
+	</footer>
+	
+	<!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	
+	<script type="text/javascript" src="{% static 'store/js/custom_select_menu.js' %}"></script>
+	<script type="text/javascript" src="{% static 'store/js/main.js' %}"></script>
+
+</body>
+</html>
