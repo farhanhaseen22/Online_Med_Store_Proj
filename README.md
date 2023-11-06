@@ -14,11 +14,10 @@ This is the final project of ENGI-981B.
 ### SignUp Page :
 <p>-- User have to register to purchase items.</p>
 <p>-- Email Verificaton Feature.</p>
-<img src="/image_readme/register.png">
+<!-- <img src="/image_readme/register.png"> -->
 
 ### Login Page :
 <p>-- User can login by entering his/her username and password.</p>
-<p>-- Social Authentication Feature</p>
 <p>-- Forgot Password Feature </p>
 <!-- <img src="/image_readme/login.png"> -->
 
@@ -29,7 +28,7 @@ This is the final project of ENGI-981B.
 <p>-- User can edit his profile</p>
 <!-- <img src="/image_readme/edit profile.png"> -->
 
-### Ecommerce Front Page:
+### Home Page:
 <p>-- Category wise items is shown</p>
 <p>-- Search Button Feature</p>
 <!-- <img src="/image_readme/store.png"> -->
@@ -50,10 +49,6 @@ This is the final project of ENGI-981B.
 <p>-- Edit Delete or Use of stored address Feature</p>
 <!-- <img src="/image_readme/checkout.png"> -->
 <!-- <img src="/image_readme/address.png"> -->
-
-### Payment Successful Page :
-<p>-- Payment Gateway Feature (Not Integrated as it's not in production)</p>
-<!-- <img src="/image_readme/payment.png"> -->
 
 ### Orders page :
 <p>-- Details of the orders</p>

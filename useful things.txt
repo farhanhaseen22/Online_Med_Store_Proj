@@ -26,6 +26,7 @@ You should replace the name of the superuser you created with NameHere in the la
 
 python manage.py createsuperuser
 
+.\venv\Scripts\activate
 python manage.py runserver
 
 Go to http://127.0.0.1:8000/admin/

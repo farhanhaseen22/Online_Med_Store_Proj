@@ -14,6 +14,7 @@ urlpatterns = [
     path('order_details/',views.order_details,name='order_details'),
     path('fav_orders/',views.fav_orders,name='fav_orders'),
     path('add_to_favs/',views.add_to_favs,name='add_to_favs'),
+    path('update_rating/',views.update_rating,name='update_rating'),
 
     path('make_payment/<int:id>',views.make_payment,name='make_payment'),
     path('delete_address/<int:id>', views.delete_address, name='delete_address'),

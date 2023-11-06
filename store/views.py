@@ -278,10 +278,10 @@ def fav_orders(request):
     return render(request,'store/fav_orders.html',context)
 
 
+
 @csrf_exempt
 def add_to_favs(request):
 
-    total_item_cart = 0
     about = 'item_not_added'
     if request.user.is_authenticated:
         product_id = request.POST.get('product_id')
@@ -296,16 +296,32 @@ def add_to_favs(request):
             item.save()
             about = 'Added to Favourites'
 
-        total_item_cart = getting_cart_total(request)
-
     context = {
-        'message' : about,
-        'total_item_cart' : total_item_cart,
+        'message' : about
     }
     
     return JsonResponse(context, safe=False)
-    # print(order)
-    # return HttpResponse('')
+
+
+@csrf_exempt
+def update_rating(request):
+
+    if request.user.is_authenticated:
+        product_id = request.POST.get('product_id')
+        selected_rating = request.POST.get('selected_rating')
+
+        about = 0
+        if int(selected_rating):
+            num_sr = int(selected_rating)
+            if 0 < num_sr < 6:
+                product = Product.objects.get(id = product_id)
+                
+                product.rating = selected_rating
+                product.save()
+                about = 1
+        
+    return JsonResponse(about, safe=False)
+
 
 
 def make_payment(request,id):

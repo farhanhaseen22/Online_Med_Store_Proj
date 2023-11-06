@@ -90,32 +90,36 @@ $('#modalCloseButton').click(function(e){
 	window.location.reload();
 });
 
-// Both adding and updating the rating of an item //
+// Both adding a rating to an item //
+// And updating the rating of an item //
 
 $('.rating_submit_btn').click(function(e){
 	e.preventDefault() 
 	var product_id = $(this).attr("product_id");
+	// var selected_rating = document.getElementsByClassName("select-selected")[0].innerHTML;
+	var selected_rating = $(".select-selected").text();
+	// console.log("Selected_rating=",selected_rating)
 
-
-	
-	var selected_rating = $('.select-selected').val();
-	console.log("AGHASD=",selected_rating)
-
-	// $.ajax(
-	// { 
-	//     type:"POST", 
-	//     url: "http://127.0.0.1:8000/add_to_favs/",
-	//     data:{ 
-	//       		'product_id' : product_id,
-	//       		'csrfmiddlewaretoken' : '{{ csrf_token }}',
-	// 	},
-	// 	dataType : 'json', 
-	// 	success: function(response) 
-	// 	{ 	
-	// 		console.log(response['message']);
-	// 		$('#modalBody').text(response['message']);
-	// 	}	  
-	// })
+	if( !parseInt(selected_rating) ) {
+		$('#modalBody').text("Have to select a Valid Rating Score!")
+	}
+	else {
+		$.ajax(
+		{ 
+			type:"POST", 
+			url: "http://127.0.0.1:8000/update_rating/",
+			data:{ 
+						'product_id' : product_id,
+						'selected_rating' : selected_rating,
+						'csrfmiddlewaretoken' : '{{ csrf_token }}',
+			},
+			dataType : 'json',
+			success: function(response)
+			{
+				if(response === 1) window.location.reload();
+			}
+		})
+	}
 });
 
 
