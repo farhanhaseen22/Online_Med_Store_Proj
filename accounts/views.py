@@ -13,11 +13,9 @@ from django.contrib.auth.models import User
 from store.models import Product,OrderItem , FullOrder , Purchased_item , ProductCategories
 
 
-# Create your views here.
 def user_login(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('store'))
-
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -28,7 +26,6 @@ def user_login(request):
             user = authenticate(username=username,password=password)
 
             if user:
-
                 if user.is_active:
                     login(request,user)
                     return HttpResponseRedirect(reverse('store'))
@@ -47,7 +44,7 @@ def user_login(request):
         'form' : form
     }
 
-    return render(request ,'accounts/login.html' ,context )
+    return render(request, 'accounts/login.html', context)
 
 
 
@@ -99,9 +96,9 @@ def edit_profile(request):
         total_item_cart += item.quantity
 
     if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST , instance=request.user )
-        profile_form = ProfileUpdateForm(request.POST ,
-                            instance=request.user.profile,files =request.FILES)
+        user_form = UserUpdateForm(request.POST, instance=request.user )
+        profile_form = ProfileUpdateForm(request.POST,
+                            instance=request.user.profile, files=request.FILES)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
@@ -143,11 +140,11 @@ def profilepage(request,username):
 
     ordered = []
     for order in orders:
-        tt = []
+        items_temp = []
         items = Purchased_item.objects.filter(order = order)
         for item in items:
-            tt.append(item)
-        ordered.append({'order':order , 'items':tt})
+            items_temp.append(item)
+        ordered.append({'order':order , 'items':items_temp})
 
     product_categories = ProductCategories.objects.all()
 

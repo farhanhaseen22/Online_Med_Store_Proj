@@ -22,6 +22,8 @@ This is the final project of ENGI-981B.
 <!-- <img src="/image_readme/login.png"> -->
 
 ### Profile Page :
+<p>-- User can change details of his/her profile.</p>
+<p>-- Can change Password Feature </p>
 <!-- <img src="/image_readme/profile.png"> -->
 
 ### Edit Profile Page :

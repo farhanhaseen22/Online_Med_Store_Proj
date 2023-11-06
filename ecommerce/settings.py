@@ -38,11 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     'store.apps.StoreConfig',
-    'accounts',
-    'social_django',
+    'accounts.apps.AccountsConfig',
+    'rest_framework',
     'crispy_forms',
-    'rest_framework'
+    'social_django'
 ]
 
 AUTHENTICATION_BACKENDS = (

@@ -101,8 +101,8 @@
 				{% else %}
 					<a href="{% url 'profilepage' username=user.username %}"><img class="mr-sm-1" src="/static/images/default.png" width="35" , height="35"></a>
 				{% endif %}
-		    	<h5><strong><a href="{% url 'profilepage' username=request.user.username %}" style="color: white">{{request.user.username}}</a></strong></h5>
 				
+		    	<h5><strong><a href="{% url 'profilepage' username=request.user.username %}" style="color: white">{{request.user.username}}</a></strong></h5>
 				<a href="{% url 'cart' %}">
 					<img  id="cart-icon" src="{% static 'images/cart.png' %}">
 				</a>
