@@ -1,10 +1,11 @@
 First, redirect the output of pip freeze to a file named requirements.txt.
 
-$ pip freeze > requirements.txt
+pip freeze > requirements.txt
 
 Next, copy or move this requirements.txt to the other environment and use it to install the packages.
 
-$ pip install -r requirements.txt
+pip install -r requirements.txt
+pip uninstall -y -r requirements.txt
 
 ===================Create & Start virtual environment==========================
 
@@ -55,10 +56,10 @@ git config --list --show-origin
 
 Change username and email global:
 
-git config --global user.name "Nanhe Kumar"
-git config --global user.email "info@nanhekumar.com"
+git config --global user.name ""
+git config --global user.email ""
 
 Change username and email for current repo:
 
-git config  user.name "Nanhe Kumar"
-git config  user.email "info@nanhekumar.com"
+git config  user.name ""
+git config  user.email ""

@@ -1,11 +1,10 @@
-## As of November 5th, 2023
+### Fixed the login page, profile page, date input field and other stuff
 
 ### Name: Online-Medicine-Store-Website
 This is the final project of ENGI-981B.
 
 ### Setup
 1. pip install -r requirements.txt
-2. cd Qoura-clone
 3. python manage.py makemigrations
 4. python manage.py migrate
 5. python manage.py runserver

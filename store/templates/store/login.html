@@ -1,0 +1,16 @@
+{% extends 'store/main.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<h1 class="display-6">Log In!</h1>
+	<hr class="my-4">
+	<form method="POST">
+		{% csrf_token %}
+		{{ form|crispy }}
+		<br>
+		<input type="submit" class="btn btn-primary mb-2" name="submit" value='Login'>
+	</form>
+	<div class="login-row">
+		<a class="align-middle" href="{% url 'register' %}">Don't have an account, then create one!</a>
+	</div>
+
+{% endblock %}

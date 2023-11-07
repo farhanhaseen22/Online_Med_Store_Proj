@@ -97,12 +97,12 @@
 			</div>
 	    	{% if request.user.is_authenticated %}
 	     		{% if request.user.profile.photo %}
-					<a href="{% url 'profilepage' username=user.username %}"><img class="mr-sm-1" src="{{ request.user.profile.photo.url }}" width="35" height="35"></a>
+					<a href="{% url 'edit_profile' %}"><img class="mr-sm-1" src="{{ request.user.profile.photo.url }}" width="35" height="35"></a>
 				{% else %}
-					<a href="{% url 'profilepage' username=user.username %}"><img class="mr-sm-1" src="/static/images/default.png" width="35" , height="35"></a>
+					<a href="{% url 'edit_profile' %}"><img class="mr-sm-1" src="/static/images/default.png" width="35" , height="35"></a>
 				{% endif %}
 				
-		    	<h5><strong><a href="{% url 'profilepage' username=request.user.username %}" style="color: white">{{request.user.username}}</a></strong></h5>
+		    	<h5><strong><a href="{% url 'edit_profile' %}" style="color: white">{{request.user.username}}</a></strong></h5>
 				<a href="{% url 'cart' %}">
 					<img  id="cart-icon" src="{% static 'images/cart.png' %}">
 				</a>
@@ -140,13 +140,7 @@
 		<div class="container container-fluid">
 			{% block content %}
 			{% endblock %}
-					
-			<!-- <br><br>
-			<blockquote class="blockquote text-center">
-				<p class="mb-0">** That's it! **</p>
-				<footer class="blockquote-footer"> You've scrolled to the end of the List!</footer>
-			</blockquote> -->
-
+			
 		</div>
 	</div>
 	

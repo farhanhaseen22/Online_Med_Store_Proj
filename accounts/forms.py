@@ -29,10 +29,19 @@ class UserUpdateForm(forms.ModelForm):
     # email = forms.CharField(widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name']
+        fields = ['username','first_name','last_name','email']
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    # Do not use this. For some reason,
+    # the 'input type=date' does not work when updating.
+    # "Enter a valid date." - keeps this error
+    # date_of_birth = forms.DateField(
+    #     widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'YYYY-MM-DD'}),
+    #     input_formats=['YYYY-MM-DD', '%m/%d/%Y', '%d/%m/%Y'],
+    # )
+    #############################
+
     class Meta:
         model = Profile
-        fields = ['dob','photo']
+        fields = ['date_of_birth','photo']

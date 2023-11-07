@@ -8,9 +8,13 @@ from .forms import (LoginForm ,
 from django.contrib.auth import authenticate ,logout ,login
 from django.http import HttpResponse , HttpResponseRedirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from store.models import Product,OrderItem , FullOrder , Purchased_item , ProductCategories
+from store.models import (OrderItem,
+                            FullOrder,
+                            Purchased_item,
+                            ProductCategories)
 
 
 def user_login(request):
@@ -58,7 +62,7 @@ def user_logout(request):
 def register(request):
 
     if request.user.is_authenticated:
-        return HttpResponse('First logout')
+        return HttpResponse('First You need to logout!')
 
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
@@ -67,7 +71,6 @@ def register(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            Profile.objects.create(user = user)
             return HttpResponseRedirect(reverse('user_login'))
     else:
         form = UserRegistrationForm()
@@ -83,7 +86,7 @@ def register(request):
     return render(request , 'accounts/register.html',context)
 
 
-
+# @csrf_exempt
 def edit_profile(request):
 
     if not request.user.is_authenticated:
@@ -95,7 +98,10 @@ def edit_profile(request):
     for item in items:
         total_item_cart += item.quantity
 
+    print('check1')
     if request.method == 'POST':
+        print(request.POST)
+        # print(request.FILES)
         user_form = UserUpdateForm(request.POST, instance=request.user )
         profile_form = ProfileUpdateForm(request.POST,
                             instance=request.user.profile, files=request.FILES)
@@ -104,7 +110,7 @@ def edit_profile(request):
             user_form.save()
             profile_form.save()
 
-        return HttpResponseRedirect(reverse('store'))
+        # return HttpResponseRedirect(reverse('store'))
 
     else:
         user_form = UserUpdateForm(instance=request.user)
@@ -112,6 +118,7 @@ def edit_profile(request):
 
     product_categories = ProductCategories.objects.all()
 
+    print('check2')
     context = {
         'product_categories': product_categories,
         'user_form' : user_form,
@@ -155,6 +162,5 @@ def profilepage(request,username):
         'user' : user,
         'total_item_cart' : total_item_cart,
     }
-
 
     return render(request,'accounts/profilepage.html',context)
