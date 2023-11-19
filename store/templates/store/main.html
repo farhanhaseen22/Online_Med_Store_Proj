@@ -82,6 +82,10 @@
 	    </ul>
 	    <div class="form-inline my-2 my-lg-0">
 	    	
+			<div>
+				<h5 class="mr-sm-3"><strong><a href="{% url 'recommendation' %}" style="color: white">Recommendation</a></strong></h5>
+			</div>
+			
 	    	<form method="get" action="{% url 'search' %}" class="form-inline my-2 my-lg-0">
 				<input type="search" name="search" aria-label="Search" placeholder="Search for anything" class="mr-sm-4 search-custom">
 				<button class="btn btn-warning my-2 mr-sm-3 rounded" type="submit">Search</button>
@@ -125,10 +129,12 @@
 	     	
 	     	{% else %}
 			
-	     		<h5 class="mr-sm-3"><strong><a href="{% url 'user_login' %}" style="color: white">Login</a></strong></h5>
-	     		<div>
-		     		<h5 class="mr-sm-3"><strong><a href="{% url 'register' %}" style="color: white">Register</a></strong></h5>
-	     		</div>
+			<div>
+				<h5 class="mr-sm-3"><strong><a href="{% url 'user_login' %}" style="color: white">Login</a></strong></h5>
+			</div>
+			<div>
+				<h5 class="mr-sm-3"><strong><a href="{% url 'register' %}" style="color: white">Register</a></strong></h5>
+			</div>
 
 	     	{% endif %}
 	     	
@@ -150,7 +156,7 @@
 	</div> -->
 
 	<footer class="footer">
-		<p style="text-align: center;">No 1983 ©Copyright Intended</p>
+		<p style="text-align: center;">No 2023 ©Copyright Intended</p>
 	</footer>
 	
 	<!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->

@@ -33,9 +33,10 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    #############################
     # Do not use this. For some reason,
     # the 'input type=date' does not work when updating.
-    # "Enter a valid date." - keeps this error
+    # It keeps showing this error: "Enter a valid date."
     # date_of_birth = forms.DateField(
     #     widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'YYYY-MM-DD'}),
     #     input_formats=['YYYY-MM-DD', '%m/%d/%Y', '%d/%m/%Y'],

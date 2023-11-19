@@ -1,6 +1,14 @@
+# For the recommendation system
+import numpy as np
+import pandas as pd
+import warnings
+from sklearn.neighbors import NearestNeighbors
+from scipy.sparse import csr_matrix
+
 from django.shortcuts import render
-from .models import Product, OrderItem, ShippingAddress, FullOrder, Purchased_item, ProductCategories, Favored_Item
+from .models import Product, OrderItem, ShippingAddress, FullOrder, Purchased_item, ProductCategories, Favored_Item, Item_Rating
 from .forms import ShippingForm , ShippingUpdateForm
+from django.db.models import Count, Sum
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -10,7 +18,84 @@ from django.urls import reverse
 import datetime
 
 
-# Create the views here...
+# Now, we create user-item matrix using scipy csr matrix
+def create_matrix(df):
+	
+	N = len(df['userId'].unique())
+	M = len(df['movieId'].unique())
+	
+	# Map Ids to indices
+	user_mapper = dict(zip(np.unique(df["userId"]), list(range(N))))
+	movie_mapper = dict(zip(np.unique(df["movieId"]), list(range(M))))
+	
+	# Map indices to IDs
+	user_inv_mapper = dict(zip(list(range(N)), np.unique(df["userId"])))
+	movie_inv_mapper = dict(zip(list(range(M)), np.unique(df["movieId"])))
+	
+	user_index = [user_mapper[i] for i in df['userId']]
+	movie_index = [movie_mapper[i] for i in df['movieId']]
+
+	X = csr_matrix((df["rating"], (movie_index, user_index)), shape=(M, N))
+
+	return X, user_mapper, movie_mapper, user_inv_mapper, movie_inv_mapper
+
+
+def find_similar_movies(movie_id, X, movie_mapper, movie_inv_mapper, k, metric='cosine', show_distance=False):
+	
+	neighbour_ids = []
+	
+	movie_ind = movie_mapper[movie_id]
+	movie_vec = X[movie_ind]
+	k+=1
+	kNN = NearestNeighbors(n_neighbors=k, algorithm="brute", metric=metric)
+	kNN.fit(X)
+	movie_vec = movie_vec.reshape(1,-1)
+	neighbour = kNN.kneighbors(movie_vec, return_distance=show_distance)
+	for i in range(0,k):
+		n = neighbour.item(i)
+		neighbour_ids.append(movie_inv_mapper[n])
+	neighbour_ids.pop(0)
+	return neighbour_ids
+
+
+def recommendation_system(request):
+    
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('user_login'))
+
+    total_item_cart = 0
+    if request.user.is_authenticated:
+        total_item_cart = getting_cart_total(request)
+
+    product_categories = ProductCategories.objects.all()
+
+    #################################################
+    ratings = pd.read_csv("https://s3-us-west-2.amazonaws.com/recommender-tutorial/ratings.csv")
+    movies = pd.read_csv("https://s3-us-west-2.amazonaws.com/recommender-tutorial/movies.csv")
+    
+    ######## CSR ########
+    X, movie_mapper, movie_inv_mapper = create_matrix(ratings)
+    ######## find_similar_movies ########
+    gained_movie_titles=[]
+    movie_titles = dict(zip(movies['movieId'], movies['title']))
+    movie_id = 7
+
+    similar_ids = find_similar_movies(movie_id, X, movie_mapper, movie_inv_mapper, k=10)
+
+    for i in similar_ids:
+        gained_movie_titles.append(movie_titles[i])
+    
+    ######## final ########
+    
+    context = {
+        'product_categories' : product_categories,
+        'total_item_cart' : total_item_cart,
+        'gained_movie_titles' : gained_movie_titles,
+    }
+
+    return render(request,'store/recommendation_system.html',context)
+
+
 
 ##### Common Functions #####
 
@@ -203,6 +288,7 @@ def item_detail(request,id):
 
     Favored_Item_exists = False
     product = Product.objects.get(id=id)
+    item = Item_Rating.objects.get(product = product, user = request.user)
 
     if Favored_Item.objects.filter(product = product, user = request.user).exists():
         Favored_Item_exists = True
@@ -212,6 +298,7 @@ def item_detail(request,id):
     context = {
         'product_categories': product_categories,
         'product' : product,
+        'item' : item,
         'total_item_cart' : total_item_cart,
         'Favored_Item_exists' : Favored_Item_exists,
     }
@@ -315,8 +402,22 @@ def update_rating(request):
             num_sr = int(selected_rating)
             if 0 < num_sr < 6:
                 product = Product.objects.get(id = product_id)
+
+                if Item_Rating.objects.filter(product = product, user = request.user).exists():
+                    item = Item_Rating.objects.get(product = product, user = request.user)
+                    item.rating = selected_rating
+                    item.save()
+                else:
+                    item = Item_Rating.objects.create(product = product, user = request.user, rating = selected_rating)
+                    item.save()
+                # whether new Item Rating is created or Item Rating is updated
+                # Product is always needed to be updated
+                calc_item_count = Item_Rating.objects.filter(product = product).count()
+                calc_allratings = Item_Rating.objects.filter(product = product).aggregate(sum_amount=Sum('rating'))['sum_amount']
+                calc_final_ratings = calc_allratings/(calc_item_count)
                 
-                product.rating = selected_rating
+                print(f"Final rating: {calc_final_ratings}")
+                product.rating = calc_final_ratings
                 product.save()
                 about = 1
         
@@ -463,3 +564,4 @@ def update_address(request,id):
     }
 
     return render(request ,'store/update_address.html',context)
+

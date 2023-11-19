@@ -1,4 +1,13 @@
-### Fixed the login page, profile page, date input field and other stuff
+### Recom system implmntion trying
+### venv fixed - numpy installed in the right project
+### Database updated a lot, migration hist fixed, git hist fixed
+
+```
+Total Rating:
+3.67/5.00
+Your Rating:
+4/5
+```
 
 ### Name: Online-Medicine-Store-Website
 This is the final project of ENGI-981B.

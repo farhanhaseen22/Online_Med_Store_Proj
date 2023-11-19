@@ -35,7 +35,7 @@ Go to http://127.0.0.1:8000/admin/
 ====================================================================================================
 create database Medistore;
 
-python manage.py makemigrations store --name ADDED_COLUMN_NAME_RATING
+python manage.py makemigrations store --name ADDED_NEW_COLUMN_type_of_illness
 
 python manage.py showmigrations
 
@@ -46,7 +46,9 @@ git remote add origin
 
 Username and Password don't work anymore, 
 instead you have to use your Personal access tokens, like so,
-git remote set-url origin https://PERSONAL_ACCESS_TOKEN@github.com/username/reponame.git
+set-url
+git remote get-url origin
+git remote add origin https://PERSONAL_ACCESS_TOKEN@https://github.com/farhanhaseen22/Online_Med_Store_Proj.git
 
 ====================================================================================================
 List your git config:
@@ -63,3 +65,10 @@ Change username and email for current repo:
 
 git config  user.name ""
 git config  user.email ""
+
+
+rm store/migrations/0018_ADDED_NEW_TABLE.py
+rm store/migrations/0019_auto_20231118_2215.py
+rm store/migrations/0019_ALTERED_also_tryin_todeluserid.py
+
+"E:\\6th Semester - Spring - MUN - 2023\\ENGI 981B\\Medistore_cln\\venv",

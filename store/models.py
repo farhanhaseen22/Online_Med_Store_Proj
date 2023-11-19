@@ -26,11 +26,12 @@ class ProductCategories(models.Model):
 class Product(models.Model):
 
     category = models.ManyToManyField(ProductCategories)
-    name = models.CharField(max_length=100,blank=False,name=False)
+    name = models.CharField(max_length=100, blank=False, null=False)
     price = models.FloatField(blank=False,null=False)
     image = models.ImageField(null=True,blank=True)
     description = models.TextField(null=True,blank=True)
-    rating = models.PositiveSmallIntegerField(blank=False,null=True)
+    rating = models.DecimalField(max_digits=5, decimal_places=2, blank=True,null=True)
+    subcategory = models.CharField(max_length=100, blank=False, null=False)
 
     @property
     def get_imageURL(self):
@@ -41,7 +42,7 @@ class Product(models.Model):
         return url
 
     def __str__(self):
-        return self.name
+        return '{} - rating:{}'.format(self.name,self.rating)
 
 
 
@@ -127,15 +128,25 @@ class Purchased_item(models.Model):
         return self.name
 
 
-
 class Favored_Item(models.Model):
 
-    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=False)
-    product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=False)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return '{}-{}'.format(self.user.username,self.product.name)
 
+
+class Item_Rating(models.Model):
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
+    rating = models.PositiveSmallIntegerField(blank=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '{}-{}-{}'.format(self.user.username,self.product.name,self.rating)
 

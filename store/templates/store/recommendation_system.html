@@ -1,0 +1,17 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+	<h3 style="text-align: center;">Your Recommended Items are shown below: </h3>
+	<br>
+	<div class="row">
+		{% for gained_movie_title in gained_movie_titles %}
+			<div class="col-lg-4 product-box">
+				<div class="box-element">
+					<h6><strong>{{ gained_movie_title }}</strong></h6>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
+{% endblock content %}
+

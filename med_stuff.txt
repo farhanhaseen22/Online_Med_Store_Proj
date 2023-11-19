@@ -1,0 +1,46 @@
+Allergies:
+    Nasal Allergies:
+        Flonase (fluticasone)
+        Nasacort (triamcinolone)
+    Eye Allergies:
+        Pataday (olopatadine)
+        Zaditor (ketotifen)
+
+Colds and Flu:
+    Cough Suppressants:
+        Robitussin (dextromethorphan)
+        Delsym (dextromethorphan)
+    Expectorants:
+        Mucinex (guaifenesin)
+
+Conjunctivitis ("Pink Eye"):
+    Allergic Conjunctivitis:
+        Alaway (ketotifen)
+    Bacterial Conjunctivitis:
+        Vigamox (moxifloxacin)
+
+Diarrhea:
+    Oral Rehydration Solutions:
+        Pedialyte
+        Gatorade
+    Prescription Medications:
+        Lomotil (diphenoxylate/atropine)
+
+Headaches:
+    Migraine Medications:
+        Imitrex (sumatriptan)
+        Relpax (eletriptan)
+    Tension Headache Medications:
+        Fioricet (acetaminophen/butalbital/caffeine)
+
+Mononucleosis:
+    Pain Relief and Fever Reduction:
+        Acetaminophen (Tylenol)
+        Ibuprofen (Advil, Motrin)
+
+Stomach Aches:
+    Antispasmodics:
+        Bentyl (dicyclomine)
+    Proton Pump Inhibitors (for acid reflux):
+        Prilosec (omeprazole)
+        Nexium (esomeprazole)
