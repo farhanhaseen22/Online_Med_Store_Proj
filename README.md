@@ -1,7 +1,7 @@
-### Recom system implmntion trying
-### venv fixed - numpy installed in the right project
-### Database updated a lot, migration hist fixed, git hist fixed
+### Recom system implmnted
+### But, still adjusting required
 
+Fixed the Rating system, necessary for the Recommendation system
 ```
 Total Rating:
 3.67/5.00
@@ -9,14 +9,19 @@ Your Rating:
 4/5
 ```
 
+### Remaining
+Login frontpage
+password chng
+checkout
+
 ### Name: Online-Medicine-Store-Website
 This is the final project of ENGI-981B.
 
 ### Setup
 1. pip install -r requirements.txt
-3. python manage.py makemigrations
-4. python manage.py migrate
-5. python manage.py runserver
+2. python manage.py makemigrations
+3. python manage.py migrate
+4. python manage.py runserver
 6. Access admin panel by creating superuser :->  python manage.py createsuperuser
 
 ### SignUp Page :

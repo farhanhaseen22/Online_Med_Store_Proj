@@ -148,5 +148,5 @@ class Item_Rating(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{}-{}-{}'.format(self.user.username,self.product.name,self.rating)
+        return '{}--{}: {}'.format(self.user.username,self.product.name,self.rating)
 

@@ -20,42 +20,44 @@ import datetime
 
 # Now, we create user-item matrix using scipy csr matrix
 def create_matrix(df):
-	
-	N = len(df['userId'].unique())
-	M = len(df['movieId'].unique())
-	
-	# Map Ids to indices
-	user_mapper = dict(zip(np.unique(df["userId"]), list(range(N))))
-	movie_mapper = dict(zip(np.unique(df["movieId"]), list(range(M))))
-	
-	# Map indices to IDs
-	user_inv_mapper = dict(zip(list(range(N)), np.unique(df["userId"])))
-	movie_inv_mapper = dict(zip(list(range(M)), np.unique(df["movieId"])))
-	
-	user_index = [user_mapper[i] for i in df['userId']]
-	movie_index = [movie_mapper[i] for i in df['movieId']]
+    
+    N = len(df['user_id'].unique())
+    M = len(df['product_id'].unique())
 
-	X = csr_matrix((df["rating"], (movie_index, user_index)), shape=(M, N))
+    # Map Ids to indices
+    user_mapper = dict(zip(np.unique(df["user_id"]), list(range(N))))
+    product_mapper = dict(zip(np.unique(df["product_id"]), list(range(M))))
 
-	return X, user_mapper, movie_mapper, user_inv_mapper, movie_inv_mapper
+    # Map indices to IDs
+    user_inv_mapper = dict(zip(list(range(N)), np.unique(df["user_id"])))
+    product_inv_mapper = dict(zip(list(range(M)), np.unique(df["product_id"])))
+
+    user_index = [user_mapper[i] for i in df['user_id']]
+    product_index = [product_mapper[i] for i in df['product_id']]
+
+    X = csr_matrix((df["rating"], (product_index, user_index)), shape=(M, N))
+
+    return X, user_mapper, product_mapper, user_inv_mapper, product_inv_mapper
 
 
-def find_similar_movies(movie_id, X, movie_mapper, movie_inv_mapper, k, metric='cosine', show_distance=False):
+def find_similar_products(product_id, X, product_mapper, product_inv_mapper, k, metric='cosine', show_distance=False):
 	
-	neighbour_ids = []
-	
-	movie_ind = movie_mapper[movie_id]
-	movie_vec = X[movie_ind]
-	k+=1
-	kNN = NearestNeighbors(n_neighbors=k, algorithm="brute", metric=metric)
-	kNN.fit(X)
-	movie_vec = movie_vec.reshape(1,-1)
-	neighbour = kNN.kneighbors(movie_vec, return_distance=show_distance)
-	for i in range(0,k):
-		n = neighbour.item(i)
-		neighbour_ids.append(movie_inv_mapper[n])
-	neighbour_ids.pop(0)
-	return neighbour_ids
+    neighbour_ids = []
+    # print(product_mapper)
+    # print(product_inv_mapper)
+
+    product_ind = product_mapper[product_id]
+    product_vec = X[product_ind]
+    k+=1
+    kNN = NearestNeighbors(n_neighbors=k, algorithm="brute", metric=metric)
+    kNN.fit(X)
+    product_vec = product_vec.reshape(1,-1)
+    neighbour = kNN.kneighbors(product_vec, return_distance=show_distance)
+    for i in range(0,k):
+        n = neighbour.item(i)
+        neighbour_ids.append(product_inv_mapper[n])
+    neighbour_ids.pop(0)
+    return neighbour_ids
 
 
 def recommendation_system(request):
@@ -70,27 +72,31 @@ def recommendation_system(request):
     product_categories = ProductCategories.objects.all()
 
     #################################################
-    ratings = pd.read_csv("https://s3-us-west-2.amazonaws.com/recommender-tutorial/ratings.csv")
-    movies = pd.read_csv("https://s3-us-west-2.amazonaws.com/recommender-tutorial/movies.csv")
-    
+    all_ratings = Item_Rating.objects.values('id', 'user_id', 'product_id', 'rating')
+    all_ratings_df = pd.DataFrame(all_ratings)
+    all_products = Product.objects.values('id', 'name')
+    all_products_df = pd.DataFrame(all_products)
     ######## CSR ########
-    X, movie_mapper, movie_inv_mapper = create_matrix(ratings)
-    ######## find_similar_movies ########
-    gained_movie_titles=[]
-    movie_titles = dict(zip(movies['movieId'], movies['title']))
-    movie_id = 7
-
-    similar_ids = find_similar_movies(movie_id, X, movie_mapper, movie_inv_mapper, k=10)
-
-    for i in similar_ids:
-        gained_movie_titles.append(movie_titles[i])
+    X, user_mapper, product_mapper, user_inv_mapper, product_inv_mapper = create_matrix(all_ratings_df)
+    ######## Find similar products ########
+    gained_product_ids=[]
+    product_id = 1
     
+    similar_ids = find_similar_products(product_id, X, product_mapper, product_inv_mapper, k=6)
+
+    for idx in similar_ids:
+        gained_product_ids.append(idx)
+    
+    gained_products = Product.objects.filter(id__in=gained_product_ids)
+    # print("\nCheck - 1\n")
+    # print(gained_products)
+
     ######## final ########
     
     context = {
         'product_categories' : product_categories,
         'total_item_cart' : total_item_cart,
-        'gained_movie_titles' : gained_movie_titles,
+        'gained_products' : gained_products,
     }
 
     return render(request,'store/recommendation_system.html',context)
@@ -288,7 +294,10 @@ def item_detail(request,id):
 
     Favored_Item_exists = False
     product = Product.objects.get(id=id)
-    item = Item_Rating.objects.get(product = product, user = request.user)
+    if Item_Rating.objects.filter(product = product, user = request.user).exists():
+        item = Item_Rating.objects.get(product = product, user = request.user)
+    else:
+        item = False
 
     if Favored_Item.objects.filter(product = product, user = request.user).exists():
         Favored_Item_exists = True
@@ -396,8 +405,8 @@ def update_rating(request):
     if request.user.is_authenticated:
         product_id = request.POST.get('product_id')
         selected_rating = request.POST.get('selected_rating')
-
         about = 0
+
         if int(selected_rating):
             num_sr = int(selected_rating)
             if 0 < num_sr < 6:
@@ -564,4 +573,3 @@ def update_address(request,id):
     }
 
     return render(request ,'store/update_address.html',context)
-

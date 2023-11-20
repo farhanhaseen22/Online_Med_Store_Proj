@@ -21,7 +21,11 @@
                     </div>
                     <div class="item-detail-rating">
                         <div>Your Rating:</div>
+                        {% if not item %}
+                        <div class="rating-content">---</div>
+                        {% else %}
                         <div class="rating-content">{{item.rating}}/5</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

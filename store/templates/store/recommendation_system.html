@@ -4,10 +4,18 @@
 	<h3 style="text-align: center;">Your Recommended Items are shown below: </h3>
 	<br>
 	<div class="row">
-		{% for gained_movie_title in gained_movie_titles %}
+		{% for product in gained_products %}
 			<div class="col-lg-4 product-box">
+				<img class="thumbnail" src="{{ product.get_imageURL }}">
 				<div class="box-element">
-					<h6><strong>{{ gained_movie_title }}</strong></h6>
+					<h6><strong>{{product.name}}</strong></h6>
+					<hr>
+
+					<button  class="update_cart btn btn-outline-secondary add-btn" product_id ="{{product.id}}">Add to Cart</button>
+
+					<a class="btn btn-outline-success" href="{% url 'item_detail' product.id %}">View</a>
+					<h4 style="display: inline-block; float: right"><strong>&dollar;{{product.price}}</strong></h4>
+
 				</div>
 			</div>
 		{% endfor %}
