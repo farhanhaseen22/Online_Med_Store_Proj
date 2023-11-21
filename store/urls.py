@@ -21,5 +21,6 @@ urlpatterns = [
     path('show_items/<int:id>',views.show_items,name='show_items'),
     path('search/',views.search,name='search'),
 
-    path('recommendation_system/',views.recommendation_system,name='recommendation'),
+    path('recommendation_system/',views.recom_page,name='recom_page'),
+    path('selection_for_recom/',views.selection_for_recom,name='selection_for_recom'),
 ]

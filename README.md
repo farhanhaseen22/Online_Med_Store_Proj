@@ -1,5 +1,5 @@
-### Recom system implmnted
-### But, still adjusting required
+### Recom system Finally integrated
+### But, a lil more to go
 
 Fixed the Rating system, necessary for the Recommendation system
 ```

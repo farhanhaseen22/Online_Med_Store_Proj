@@ -1,24 +1,37 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
-	<h3 style="text-align: center;">Your Recommended Items are shown below: </h3>
-	<br>
-	<div class="row">
-		{% for product in gained_products %}
-			<div class="col-lg-4 product-box">
-				<img class="thumbnail" src="{{ product.get_imageURL }}">
-				<div class="box-element">
-					<h6><strong>{{product.name}}</strong></h6>
-					<hr>
+	<!-- <div class="recom-info-section">
+	</div> -->
+	<style>
+		.recom-selection-section {
+			margin-bottom: 3rem;
+		}
+		#ratings-part, #subcat-part {
+			margin-left: .5rem;
+		}
+	</style>
+	<div class="row recom-selection-section">
+		<!-- <select id="choosing-part">
+			<option value="1">Ratings</option>
+			<option value="2">Subcategories</option>
+		</select>
+		<select id="ratings-part">
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+		</select> -->
+		<select id="subcat-part">
+			{% for product in products %}
+			<option value="{{ product.id }}">{{ product.name }}</option>
+			{% endfor %}
+		</select>
+		<button class="rating_submit_btn btn btn-outline-info mx-2" id="enter-recommendation"">Enter</button>
+	</div>
 
-					<button  class="update_cart btn btn-outline-secondary add-btn" product_id ="{{product.id}}">Add to Cart</button>
-
-					<a class="btn btn-outline-success" href="{% url 'item_detail' product.id %}">View</a>
-					<h4 style="display: inline-block; float: right"><strong>&dollar;{{product.price}}</strong></h4>
-
-				</div>
-			</div>
-		{% endfor %}
+	<div class="recom-general-heading">
 	</div>
 
 {% endblock content %}

@@ -123,6 +123,80 @@ $('.rating_submit_btn').click(function(e){
 });
 
 
+// Recommendation Page feats //
+
+// $(document).ready(function() {
+// 	chngContentBasedOnSelect(choosing_part_val());
+// });
+// $('#choosing-part').on('change', function() {
+// 	chngContentBasedOnSelect(choosing_part_val());
+// });
+
+// function choosing_part_val(){
+// 	let selectedOpt = $('#choosing-part').val();
+// 	return selectedOpt;
+// }
+// function chngContentBasedOnSelect(selectedOpt){
+// 	if(selectedOpt==="1"){
+// 		$('#ratings-part').css('display', 'inline-block');
+// 		$('#subcat-part').css('display', 'none');
+// 	}
+// 	else{
+// 		$('#ratings-part').css('display', 'none');
+// 		$('#subcat-part').css('display', 'inline-block');
+// 	}
+// }
+
+///////////////////////
+
+
+$('#enter-recommendation').click(function(e){
+	e.preventDefault();
+	
+	var subcat_val = $("#subcat-part").val();
+	console.log("subcat_val =",subcat_val)
+
+	$.ajax({ 
+		type:"POST", 
+		url: "http://127.0.0.1:8000/selection_for_recom/",
+		data:{ 
+					'subcat_val' : subcat_val,
+					'csrfmiddlewaretoken' : '{{ csrf_token }}',
+		},
+		dataType : 'json',
+		success: function(gained_products)
+		{
+			// recomContent.append(`<h3>ID:${gained_products[i].id} and name:${gained_products[i].name}</h3>`);
+			let recomGeneralHeading = $('.recom-general-heading');
+
+			recomGeneralHeading.html(`
+				<h3 class="recom-content-title">Your Recommended Medicines are shown below: </h3>
+				<div class="recom-content row">
+				</div>
+			`);
+			
+			let recomContent = $('.recom-content');
+			
+			for (let i = 0; i < gained_products.length; i++) {
+				recomContent.append(`
+					<div class="col-lg-4 product-box">
+						<img class="thumbnail" src="/images/${gained_products[i].image}">
+						<div class="box-element">
+							<h6><strong>${gained_products[i].name}</strong></h6>
+							<hr>
+							<button  class="update_cart btn btn-outline-secondary add-btn" product_id ="${gained_products[i].id}">Add to Cart</button>
+							<a class="btn btn-outline-success" href="/item_detail/${gained_products[i].id}">View</a>
+							<h4 style="display: inline-block; float: right"><strong>&dollar;${gained_products[i].price}</strong></h4>
+						</div>
+					</div>
+				`);
+			}
+		}
+	})
+
+});
+/////////////////////////////////////////
+
 
 // Sticky Navbar //
 

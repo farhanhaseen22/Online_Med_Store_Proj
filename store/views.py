@@ -35,24 +35,25 @@ def create_matrix(df):
     user_index = [user_mapper[i] for i in df['user_id']]
     product_index = [product_mapper[i] for i in df['product_id']]
 
-    X = csr_matrix((df["rating"], (product_index, user_index)), shape=(M, N))
+    csr = csr_matrix((df["rating"], (product_index, user_index)), shape=(M, N))
 
-    return X, user_mapper, product_mapper, user_inv_mapper, product_inv_mapper
+    return csr, user_mapper, product_mapper, user_inv_mapper, product_inv_mapper
 
 
-def find_similar_products(product_id, X, product_mapper, product_inv_mapper, k, metric='cosine', show_distance=False):
+def find_similar_products(product_id, csr_mat, product_mapper, product_inv_mapper, k):
 	
     neighbour_ids = []
+    # print(f"ID:{product_id} and type:{type(product_id)}")
     # print(product_mapper)
     # print(product_inv_mapper)
 
-    product_ind = product_mapper[product_id]
-    product_vec = X[product_ind]
+    product_ind = product_mapper[int(product_id)]
+    product_vec = csr_mat[product_ind]
     k+=1
-    kNN = NearestNeighbors(n_neighbors=k, algorithm="brute", metric=metric)
-    kNN.fit(X)
+    kNN = NearestNeighbors(n_neighbors=k, algorithm="brute", metric='cosine')
+    kNN.fit(csr_mat)
     product_vec = product_vec.reshape(1,-1)
-    neighbour = kNN.kneighbors(product_vec, return_distance=show_distance)
+    neighbour = kNN.kneighbors(product_vec, return_distance=False)
     for i in range(0,k):
         n = neighbour.item(i)
         neighbour_ids.append(product_inv_mapper[n])
@@ -60,8 +61,41 @@ def find_similar_products(product_id, X, product_mapper, product_inv_mapper, k, 
     return neighbour_ids
 
 
-def recommendation_system(request):
+@csrf_exempt
+def selection_for_recom(request):
     
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('user_login'))
+
+    #################################################
+    all_ratings = Item_Rating.objects.values('id', 'user_id', 'product_id', 'rating')
+    all_ratings_df = pd.DataFrame(all_ratings)
+    # all_products = Product.objects.values('id', 'name')
+    # all_products_df = pd.DataFrame(all_products)
+
+    ######## CSR ########
+    csr_mat, user_mapper, product_mapper, user_inv_mapper, product_inv_mapper = create_matrix(all_ratings_df)
+    ######## Find similar products ########
+    gained_product_ids=[]
+    # product_id = 1
+    subcat_val = request.POST.get('subcat_val')
+    
+    similar_ids = find_similar_products(subcat_val, csr_mat, product_mapper, product_inv_mapper, k=6)
+
+    for idx in similar_ids:
+        gained_product_ids.append(idx)
+    
+    gained_products = Product.objects.filter(id__in=gained_product_ids)
+    
+    ######## final ########
+    
+    gained_products = list(gained_products.values())
+
+    # print("\nCheck - 1\n")
+    return JsonResponse(gained_products, safe=False)
+
+def recom_page(request):
+
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('user_login'))
 
@@ -70,37 +104,17 @@ def recommendation_system(request):
         total_item_cart = getting_cart_total(request)
 
     product_categories = ProductCategories.objects.all()
+    products = Product.objects.values('id', 'name')
+    # sub_categories_of_products = Product.objects.values('subcategory').distinct()
 
-    #################################################
-    all_ratings = Item_Rating.objects.values('id', 'user_id', 'product_id', 'rating')
-    all_ratings_df = pd.DataFrame(all_ratings)
-    all_products = Product.objects.values('id', 'name')
-    all_products_df = pd.DataFrame(all_products)
-    ######## CSR ########
-    X, user_mapper, product_mapper, user_inv_mapper, product_inv_mapper = create_matrix(all_ratings_df)
-    ######## Find similar products ########
-    gained_product_ids=[]
-    product_id = 1
-    
-    similar_ids = find_similar_products(product_id, X, product_mapper, product_inv_mapper, k=6)
-
-    for idx in similar_ids:
-        gained_product_ids.append(idx)
-    
-    gained_products = Product.objects.filter(id__in=gained_product_ids)
-    # print("\nCheck - 1\n")
-    # print(gained_products)
-
-    ######## final ########
-    
     context = {
+        # 'sub_categories_of_products' : sub_categories_of_products,
+        'products' : products,
         'product_categories' : product_categories,
-        'total_item_cart' : total_item_cart,
-        'gained_products' : gained_products,
+        'total_item_cart' : total_item_cart
     }
 
     return render(request,'store/recommendation_system.html',context)
-
 
 
 ##### Common Functions #####
