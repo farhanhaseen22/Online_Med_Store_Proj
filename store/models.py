@@ -46,7 +46,7 @@ class Product(models.Model):
 
 
 
-class OrderItem(models.Model):
+class Cart_Item(models.Model):
 
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=False)
     product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=False)
@@ -63,13 +63,12 @@ class OrderItem(models.Model):
 
 
 
-class ShippingAddress(models.Model):
+class Shipping_Addresse(models.Model):
 
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=False)
-    recepient_fullname = models.CharField(max_length=100,null=True,blank=False)
-    phone_no = models.IntegerField(null=False,blank=False)
-    address_line1 = models.CharField(max_length=200, null=True,blank=False)
-    address_line2 = models.CharField(max_length=100,null=True,blank=True)
+    name = models.CharField(max_length=100,null=True,blank=False)
+    phone_number = models.CharField(max_length=100,null=False,blank=False)
+    shipping_address = models.CharField(max_length=200, null=True,blank=False)
     city = models.CharField(max_length=200, null=False)
     state = models.CharField(max_length=200, null=False)
     country = models.CharField(max_length=100,null=True,blank=False)
@@ -81,13 +80,12 @@ class ShippingAddress(models.Model):
 
 
 
-class FullOrder(models.Model):
+class Order_Addr_info(models.Model):
 
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
-    recepient_fullname = models.CharField(max_length=100, null=True, blank=False)
-    phone_no = models.IntegerField(null=True, blank=False)
-    address_line1 = models.CharField(max_length=200, null=True, blank=False)
-    address_line2 = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100,null=True,blank=False)
+    phone_number = models.CharField(max_length=100,null=False,blank=False)
+    shipping_address = models.CharField(max_length=200, null=True,blank=False)
     city = models.CharField(max_length=200, null=True,blank=False)
     state = models.CharField(max_length=200, null=True,blank=False)
     country = models.CharField(max_length=100, null=True, blank=False)
@@ -101,10 +99,10 @@ class FullOrder(models.Model):
 
 
 
-class Purchased_item(models.Model):
+class Purchased_Item(models.Model):
 
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
-    order = models.ForeignKey(FullOrder,on_delete=models.CASCADE,null=True)
+    order = models.ForeignKey(Order_Addr_info,on_delete=models.CASCADE,null=True)
     quantity = models.IntegerField(default=0, blank=True, null=True)
     name = models.CharField(max_length=100, blank=False, name=False)
     price = models.FloatField(blank=False, null=True)

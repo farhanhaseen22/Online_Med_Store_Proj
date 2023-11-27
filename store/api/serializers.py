@@ -1,5 +1,7 @@
-from store.models import Product , OrderItem , ShippingAddress
-from store.models import ProductCategories , FullOrder , Favored_Item , Purchased_item
+from store.models import Product , Cart_Item , Shipping_Addresse
+
+from store.models import ProductCategories , Order_Addr_info , Favored_Item , Purchased_Item
+
 from rest_framework import serializers
 
 
@@ -9,9 +11,9 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
+class Cart_ItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrderItem
+        model = Cart_Item
         fields = '__all__'
 
 
@@ -23,18 +25,18 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class OrderDetailsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = FullOrder
+        model = Order_Addr_info
         fields = '__all__'
 
 
-class ShippingAddressSerializer(serializers.ModelSerializer):
+class Shipping_AddresseSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = ShippingAddress
+        model = Shipping_Addresse
         exclude = ['user']
 
     def create(self, validated_data):
-        return ShippingAddress.objects.create(**validated_data)
+        return Shipping_Addresse.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.recepient_fullname = validated_data.get('recepient_fullname', instance.recepient_fullname)

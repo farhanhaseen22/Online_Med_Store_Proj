@@ -42,11 +42,10 @@
 		<div class="box-element">
 			{% for adr in addresses %}
 				<div class="address-section">
-					<h4><strong><p>{{adr.recepient_fullname}}</p></strong></h4>
-					<div> Phone Number :-> {{adr.phone_no}}</div>
+					<h4><strong><p>{{adr.name}}</p></strong></h4>
+					<div> Phone Number :-> {{adr.phone_number}}</div>
 					<div class="info">
-						<pre> {{adr.address_line1}},</pre>
-						<pre> {{adr.address_line2}},</pre>
+						<pre> {{adr.shipping_address}},</pre>
 						<pre> {{adr.city}},</pre>
 						<pre> {{adr.state}},</pre>
 						<pre> {{adr.country}},</pre>

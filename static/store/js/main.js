@@ -38,6 +38,32 @@ $('.update_cart').click(function(e){
 	}
 });
 
+// Inserting an item on the show items page 
+$('.update_cart_B').click(function(e){
+	var product_id = $(this).attr("product_id");
+	item_quantity = "1"
+	
+	console.log("update_cart_B check")
+	$.ajax(
+	{ 
+		type:"POST", 
+		url: "http://127.0.0.1:8000/insert_cart/",
+		data:{ 
+				'product_id' : product_id,
+				'item_quantity' : item_quantity,
+				'csrfmiddlewaretoken' : '{{ csrf_token }}',
+		},
+		dataType : 'json', 
+		success: function(response) 
+		{
+			console.log(`Cart: ${response['total_item_cart']}`);
+			$('#modalBody').text(`Added this item ${item_quantity} times to Cart`);
+			$('#cart-total').text(response['total_item_cart']);
+		}
+	})
+});
+
+
 // Update the quantity of an item in cart //
 
 $('.update_cart_quantity').click(function(e){ 
@@ -154,7 +180,7 @@ $('#enter-recommendation').click(function(e){
 	e.preventDefault();
 	
 	var subcat_val = $("#subcat-part").val();
-	console.log("subcat_val =",subcat_val)
+	// console.log("subcat_val =",subcat_val)
 
 	$.ajax({ 
 		type:"POST", 

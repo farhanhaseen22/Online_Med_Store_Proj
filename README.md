@@ -1,5 +1,4 @@
 ### Recom system Finally integrated
-### But, a lil more to go
 
 Fixed the Rating system, necessary for the Recommendation system
 ```
@@ -8,11 +7,6 @@ Total Rating:
 Your Rating:
 4/5
 ```
-
-### Remaining
-Login frontpage
-password chng
-checkout
 
 ### Name: Online-Medicine-Store-Website
 This is the final project of ENGI-981B.

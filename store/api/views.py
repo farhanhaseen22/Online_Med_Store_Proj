@@ -1,12 +1,13 @@
-from store.models import Product , OrderItem , ShippingAddress , FullOrder , Purchased_item
-from store.models import ProductCategories
+from store.models import Product , Cart_Item , Shipping_Addresse , Order_Addr_info , Purchased_Item, ProductCategories
+
+
 from django.http import JsonResponse
 from .serializers import(
     ProductCategorySerializer,
-    OrderItemSerializer,
+    Cart_ItemSerializer,
     ProductSerializer,
     OrderDetailsSerializer,
-    ShippingAddressSerializer,
+    Shipping_AddresseSerializer,
 )
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -27,7 +28,7 @@ class Store(APIView):
         total_item_cart = 0
 
         if request.user.is_authenticated:
-            items = OrderItem.objects.filter(user=request.user)
+            items = Cart_Item.objects.filter(user=request.user)
             for item in items:
                 total_item_cart += item.quantity
 
@@ -52,7 +53,7 @@ class Cart(APIView):
         total_item_cart = 0
 
         if request.user.is_authenticated:
-            items = OrderItem.objects.filter(user=request.user)
+            items = Cart_Item.objects.filter(user=request.user)
             for item in items:
                 total_item_cart += item.quantity
 
@@ -61,7 +62,7 @@ class Cart(APIView):
 
         product_categories = ProductCategories.objects.all()
         serializer_pct = ProductCategorySerializer(product_categories,many=True)
-        serializer_OI = OrderItemSerializer(items,many=True)
+        serializer_OI = Cart_ItemSerializer(items,many=True)
         context = {
             'items': serializer_OI.data,
             'total_item_cart': total_item_cart,
@@ -84,7 +85,7 @@ class Checkout(APIView):
         total_item_cart = 0
 
         if request.user.is_authenticated:
-            items = OrderItem.objects.filter(user=request.user)
+            items = Cart_Item.objects.filter(user=request.user)
             for item in items:
                 total_item_cart += item.quantity
 
@@ -94,13 +95,13 @@ class Checkout(APIView):
         if total_item_cart == 0:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        serializer_OI = OrderItemSerializer(items, many=True)
+        serializer_OI = Cart_ItemSerializer(items, many=True)
 
         product_categories = ProductCategories.objects.all()
         serializer_pct = ProductCategorySerializer(product_categories, many=True)
 
-        addresses = ShippingAddress.objects.filter(user = request.user)
-        serializer_adr = ShippingAddressSerializer(addresses,many=True)
+        addresses = Shipping_Addresse.objects.filter(user = request.user)
+        serializer_adr = Shipping_AddresseSerializer(addresses,many=True)
 
         context = {
             'product_categories' : serializer_pct.data,
@@ -120,7 +121,7 @@ class ShowItems(APIView):
         total_item_cart = 0
 
         if request.user.is_authenticated:
-            items = OrderItem.objects.filter(user=request.user)
+            items = Cart_Item.objects.filter(user=request.user)
             for item in items:
                 total_item_cart += item.quantity
         try:
@@ -153,7 +154,7 @@ class ItemDetail(APIView):
         total_item_cart = 0
 
         if request.user.is_authenticated:
-            items = OrderItem.objects.filter(user=request.user)
+            items = Cart_Item.objects.filter(user=request.user)
             for item in items:
                 total_item_cart += item.quantity
         try:
@@ -185,15 +186,15 @@ class OrderDetails(APIView):
 
         total_item_cart = 0
         if request.user.is_authenticated:
-            items = OrderItem.objects.filter(user=request.user)
+            items = Cart_Item.objects.filter(user=request.user)
             for item in items:
                 total_item_cart += item.quantity
 
-        orders = FullOrder.objects.filter(user=request.user).order_by('-date_ordered')
+        orders = Order_Addr_info.objects.filter(user=request.user).order_by('-date_ordered')
 
         ordered = []
         for order in orders:
-            items = Purchased_item.objects.filter(order=order)
+            items = Purchased_Item.objects.filter(order=order)
             tt = serializers.serialize('json',items)
             serializer_order = OrderDetailsSerializer(order)
             ordered.append({'order': serializer_order.data, 'items': tt})
@@ -218,7 +219,7 @@ class Search(APIView):
         query = request.data['search']
 
         if request.user.is_authenticated:
-            items = OrderItem.objects.filter(user=request.user)
+            items = Cart_Item.objects.filter(user=request.user)
             for item in items:
                 total_item_cart += item.quantity
 
@@ -257,7 +258,7 @@ class InsertIntoCart(APIView):
         action = request.data['action']
         product = Product.objects.get(id=product_id)
 
-        item , created = OrderItem.objects.get_or_create(product=product,user=request.user)
+        item , created = Cart_Item.objects.get_or_create(product=product,user=request.user)
         item.save()
         if action == 'add':
             item.quantity+=1
@@ -268,7 +269,7 @@ class InsertIntoCart(APIView):
             if item.quantity <=0:
                 item.delete()
 
-        items = OrderItem.objects.filter(user=request.user)
+        items = Cart_Item.objects.filter(user=request.user)
         for item in items:
             total_item_cart += item.quantity
 
@@ -286,8 +287,8 @@ class Address(APIView):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        addresses = ShippingAddress.objects.filter(user=request.user)
-        serializer_adr = ShippingAddressSerializer(addresses,many=True)
+        addresses = Shipping_Addresse.objects.filter(user=request.user)
+        serializer_adr = Shipping_AddresseSerializer(addresses,many=True)
         context = {
             'addresses' : serializer_adr.data
         }
@@ -300,7 +301,7 @@ class Address(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         request.data["user"] = self.request.user.id
-        serializer_adr = ShippingAddressSerializer(data=request.data)
+        serializer_adr = Shipping_AddresseSerializer(data=request.data)
 
         if serializer_adr.is_valid():
             serializer_adr.save(user=request.user)
@@ -314,13 +315,13 @@ class AddressDetail(APIView):
     def get(self,request,id):
 
         try:
-            adr = ShippingAddress.objects.get(id=id)
+            adr = Shipping_Addresse.objects.get(id=id)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if adr.user != request.user:
             return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-        serializer_adr = ShippingAddressSerializer(adr)
+        serializer_adr = Shipping_AddresseSerializer(adr)
         context = {
             'address' : serializer_adr.data
         }
@@ -330,14 +331,14 @@ class AddressDetail(APIView):
     def put(self,request,id):
 
         try:
-            adr = ShippingAddress.objects.get(id=id)
+            adr = Shipping_Addresse.objects.get(id=id)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if adr.user != request.user:
             return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
-        serializer_adr = ShippingAddressSerializer(adr,request.data)
+        serializer_adr = Shipping_AddresseSerializer(adr,request.data)
         if serializer_adr.is_valid():
             serializer_adr.save()
             return Response(serializer_adr.data,status=status.HTTP_201_CREATED)
@@ -347,7 +348,7 @@ class AddressDetail(APIView):
 
     def delete(self,request,id):
 
-        adr = ShippingAddress.objects.get(id=id)
+        adr = Shipping_Addresse.objects.get(id=id)
         if adr.user != request.user:
             return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
         adr.delete()
@@ -364,8 +365,8 @@ class MakePayment(APIView):
         dt = datetime.datetime.now()
         seq = int(dt.strftime("%Y%m%d%H%M%S"))
 
-        adr = ShippingAddress.objects.get(id = id)
-        obj = FullOrder.objects.create(user = request.user)
+        adr = Shipping_Addresse.objects.get(id = id)
+        obj = Order_Addr_info.objects.create(user = request.user)
 
         obj.recepient_fullname = adr.recepient_fullname
         obj.phone_no = adr.phone_no
@@ -380,9 +381,9 @@ class MakePayment(APIView):
 
         total_amount = 0
 
-        items = OrderItem.objects.all()
+        items = Cart_Item.objects.all()
         for item in items:
-            item_purchased = Purchased_item.objects.create(order = obj)
+            item_purchased = Purchased_Item.objects.create(order = obj)
             item_purchased.user = request.user
             item_purchased.quantity = item.quantity
             item_purchased.name = item.product.name

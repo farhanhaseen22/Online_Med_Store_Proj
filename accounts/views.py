@@ -11,9 +11,9 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from store.models import (OrderItem,
-                            FullOrder,
-                            Purchased_item,
+from store.models import (Cart_Item,
+                            Order_Addr_info,
+                            Purchased_Item,
                             ProductCategories)
 
 
@@ -94,7 +94,7 @@ def edit_profile(request):
 
     total_item_cart = 0
 
-    items = OrderItem.objects.filter(user=request.user)
+    items = Cart_Item.objects.filter(user=request.user)
     for item in items:
         total_item_cart += item.quantity
 
@@ -137,18 +137,18 @@ def profilepage(request,username):
 
     total_item_cart = 0
     if request.user.is_authenticated:
-        items = OrderItem.objects.filter(user=request.user)
+        items = Cart_Item.objects.filter(user=request.user)
         for item in items:
             total_item_cart += item.quantity
 
     user = User.objects.get(username=username)
     profile = Profile.objects.all()
-    orders = FullOrder.objects.filter(user=request.user).order_by('-date_ordered')
+    orders = Order_Addr_info.objects.filter(user=request.user).order_by('-date_ordered')
 
     ordered = []
     for order in orders:
         items_temp = []
-        items = Purchased_item.objects.filter(order = order)
+        items = Purchased_Item.objects.filter(order = order)
         for item in items:
             items_temp.append(item)
         ordered.append({'order':order , 'items':items_temp})
