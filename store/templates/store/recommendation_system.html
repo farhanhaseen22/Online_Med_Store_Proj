@@ -7,26 +7,24 @@
 		.recom-selection-section {
 			margin-bottom: 3rem;
 		}
-		#ratings-part, #subcat-part {
-			margin-left: .5rem;
+		#choosing-part, #k-part, #productid-part {
+			margin-left: .8rem;
 		}
 	</style>
 	<div class="row recom-selection-section">
-		<!-- <select id="choosing-part">
-			<option value="1">Ratings</option>
-			<option value="2">Subcategories</option>
-		</select>
-		<select id="ratings-part">
-			<option value="1">1</option>
-			<option value="2">2</option>
-			<option value="3">3</option>
-			<option value="4">4</option>
-			<option value="5">5</option>
-		</select> -->
-		<select id="subcat-part">
+		<select id="productid-part">
 			{% for product in products %}
 			<option value="{{ product.id }}">{{ product.name }}</option>
 			{% endfor %}
+		</select>
+		<!-- <select id="choosing-part">
+			<option value="0">Ratings</option>
+			<option value="1">Subcategories</option>
+		</select> -->
+		<select id="k-part">
+			<option value="2">2</option>
+			<option value="4">4</option>
+			<option value="6">6</option>
 		</select>
 		<button class="rating_submit_btn btn btn-outline-info mx-2" id="enter-recommendation"">Enter</button>
 	</div>

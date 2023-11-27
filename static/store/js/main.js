@@ -179,14 +179,28 @@ $('.rating_submit_btn').click(function(e){
 $('#enter-recommendation').click(function(e){
 	e.preventDefault();
 	
-	var subcat_val = $("#subcat-part").val();
-	// console.log("subcat_val =",subcat_val)
+	var productid_part = $("#productid-part").val();
+	var k_part = $("#k-part").val();
+	
+	var choosing_part = 'rating'
+	// var choosing_part = $("#choosing-part").val();
+	// if (choosing_part==='0') {
+	// 	choosing_part='rating'
+	// } else if (choosing_part==='1') {
+	// 	choosing_part='subcategory'
+	// }
 
-	$.ajax({ 
+	// console.log("productid_part =",productid_part)
+	// console.log("choosing_part =",choosing_part)
+	// console.log("k_part =",k_part)
+
+	$.ajax({
 		type:"POST", 
 		url: "http://127.0.0.1:8000/selection_for_recom/",
 		data:{ 
-					'subcat_val' : subcat_val,
+					'productid_part' : productid_part,
+					'choosing_part' : choosing_part,
+					'k_part' : k_part,
 					'csrfmiddlewaretoken' : '{{ csrf_token }}',
 		},
 		dataType : 'json',

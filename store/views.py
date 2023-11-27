@@ -19,7 +19,7 @@ import datetime
 
 
 # Now, we create user-item matrix using scipy csr matrix
-def create_matrix(df):
+def create_matrix(df, choosing):
     
     N = len(df['user_id'].unique())
     M = len(df['product_id'].unique())
@@ -35,26 +35,32 @@ def create_matrix(df):
     user_index = [user_mapper[i] for i in df['user_id']]
     product_index = [product_mapper[i] for i in df['product_id']]
 
+    # Here's the main thing
     csr = csr_matrix((df["rating"], (product_index, user_index)), shape=(M, N))
 
-    return csr, user_mapper, product_mapper, user_inv_mapper, product_inv_mapper
+    return csr, product_mapper, product_inv_mapper
 
 
-def find_similar_products(product_id, csr_mat, product_mapper, product_inv_mapper, k):
+def find_similar_products(product_id, csr_mat, product_mapper, product_inv_mapper, k_val):
 	
     neighbour_ids = []
+    k_val = int(k_val)
+    # print()
     # print(f"ID:{product_id} and type:{type(product_id)}")
+    # print(f"choosing:{choosing} and type:{type(choosing)}")
+    # print(f"k_val-> {k_val} and type:{type(k_val)}")
+    # print()
     # print(product_mapper)
     # print(product_inv_mapper)
 
     product_ind = product_mapper[int(product_id)]
     product_vec = csr_mat[product_ind]
-    k+=1
-    kNN = NearestNeighbors(n_neighbors=k, algorithm="brute", metric='cosine')
+    k_val+=1
+    kNN = NearestNeighbors(n_neighbors=k_val, algorithm="brute", metric='cosine')
     kNN.fit(csr_mat)
     product_vec = product_vec.reshape(1,-1)
     neighbour = kNN.kneighbors(product_vec, return_distance=False)
-    for i in range(0,k):
+    for i in range(0,k_val):
         n = neighbour.item(i)
         neighbour_ids.append(product_inv_mapper[n])
     neighbour_ids.pop(0)
@@ -70,17 +76,19 @@ def selection_for_recom(request):
     #################################################
     all_ratings = Item_Rating.objects.values('id', 'user_id', 'product_id', 'rating')
     all_ratings_df = pd.DataFrame(all_ratings)
-    # all_products = Product.objects.values('id', 'name')
+    # all_products = Product.objects.values('id', 'name', 'subcategory')
     # all_products_df = pd.DataFrame(all_products)
 
-    ######## CSR ########
-    csr_mat, user_mapper, product_mapper, user_inv_mapper, product_inv_mapper = create_matrix(all_ratings_df)
-    ######## Find similar products ########
-    gained_product_ids=[]
-    # product_id = 1
-    subcat_val = request.POST.get('subcat_val')
+    ######## Getting the Dropdown values ########
+    product_id = request.POST.get('productid_part')
+    choosing = request.POST.get('choosing_part')
+    k_val = request.POST.get('k_part')
     
-    similar_ids = find_similar_products(subcat_val, csr_mat, product_mapper, product_inv_mapper, k=6)
+    ######## CSR ########
+    csr_mat, product_mapper, product_inv_mapper = create_matrix(all_ratings_df, choosing)
+    ######## Getting product IDs ########
+    gained_product_ids=[]
+    similar_ids = find_similar_products(product_id, csr_mat, product_mapper, product_inv_mapper, k_val)
 
     for idx in similar_ids:
         gained_product_ids.append(idx)
